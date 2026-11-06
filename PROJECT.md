@@ -18,7 +18,7 @@ L’integrazione da terminale mantiene gli hook su creazione, rilevamento, stato
 
 ## Git e pubblicazione
 
-Repository richiesta dall’utente: `https://github.com/chrimatte/herdr-openai-usage`, pubblica, branch principale `main`. La prima pubblicazione dell’intero plugin è autorizzata; Codex deve essere indicato come coautore. Identità e hook sono configurati solo nella repository, senza modificare Git globale. Nessuna licenza è stata scelta.
+Repository richiesta dall’utente: `https://github.com/chrimatte/herdr-openai-usage`, pubblica, branch principale `main`. La prima pubblicazione dell’intero plugin è autorizzata; Codex deve essere indicato come coautore. Identità e hook sono configurati solo nella repository, senza modificare Git globale. L’utente ha scelto la licenza MIT, con copyright 2026 Christian Matteotti; testo in LICENSE e identificatore SPDX nel manifest npm.
 
 README e guida per contributori descrivono installazione, limiti, dati e verifiche. La CI usa action fissate a commit verificati e prova Node.js 22/26 su macOS/Linux. Non confondere la CI automatica con la verifica del rendering nativo.
 

@@ -76,4 +76,4 @@ Il codice della fascia è in `desktop/`; `src/` contiene lettura, normalizzazion
 
 Creato da [Christian Matteotti](https://github.com/chrimatte) con il contributo di [Codex](https://github.com/apps/chatgpt-codex-connector), indicato come coautore nei commit pertinenti.
 
-Il progetto non include ancora una licenza d’uso. Non è affiliato a Herdr o OpenAI.
+Distribuito con [licenza MIT](LICENSE). Copyright © 2026 Christian Matteotti. Il progetto non è affiliato a Herdr o OpenAI.

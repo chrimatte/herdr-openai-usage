@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "description": "Monitor delle quote OpenAI del proprio account Codex in Herdr",
+  "license": "MIT",
   "engines": { "node": ">=22" },
   "scripts": {
     "start": "node src/cli.mjs watch",
