@@ -1,0 +1,64 @@
+export function createCache() {
+  return { data: null, error: false, failures: 0, nextAt: 0, lastAttempt: -Infinity, pending: null };
+}
+
+export function isLocalCodex(pane) {
+  return typeof pane?.pane === 'string' && !pane.pane.includes('/')
+    && (pane.app === 'codex' || pane.program?.key === 'codex');
+}
+
+export async function refreshCache(cache, load, now = Date.now(), force = false) {
+  if (cache.pending) return cache.pending;
+  if ((!force && now < cache.nextAt) || now - cache.lastAttempt < 5000) return;
+  cache.lastAttempt = now;
+  cache.pending = (async () => {
+    try {
+      const data = await load();
+      if (!data || typeof data.enabled !== 'boolean' || !Array.isArray(data.windows)) throw new Error('Invalid display data');
+      cache.data = data;
+      cache.error = false;
+      cache.failures = 0;
+    } catch {
+      cache.error = true;
+      cache.failures += 1;
+    } finally {
+      const seconds = Math.max(30, Math.min(3600, cache.data?.refreshSeconds || 60));
+      cache.nextAt = now + Math.min(Math.max(600, seconds), seconds * 2 ** Math.min(cache.failures, 4)) * 1000;
+    }
+  })();
+  try { await cache.pending; }
+  finally { cache.pending = null; }
+}
+
+export function footerState(cache, now = Date.now()) {
+  const data = cache.data;
+  const windows = data?.windows ?? [];
+  const known = windows.filter((window) => Number.isFinite(window.usedPercent) && window.usedPercent >= 0);
+  const window = known.sort((a, b) => b.usedPercent - a.usedPercent)[0] ?? windows[0];
+  const remaining = window && Number.isFinite(window.usedPercent)
+    ? Math.max(0, Math.min(100, 100 - window.usedPercent)) : null;
+  const age = now - Date.parse(data?.fetchedAt ?? '');
+  const stale = !!data && (cache.error || !Number.isFinite(age) || age > Math.max(180000, (data.refreshSeconds || 60) * 3000));
+  const seconds = Number.isFinite(window?.resetsAt) ? window.resetsAt - now / 1000 : null;
+  let reset = 'Ripristino non disponibile';
+  if (seconds !== null) {
+    const minutes = Math.ceil(Math.max(0, seconds) / 60);
+    const days = Math.floor(minutes / 1440);
+    const hours = Math.floor(minutes % 1440 / 60);
+    reset = seconds <= 0 ? 'Ripristino in attesa'
+      : `Ripristino tra ${days ? `${days}g ${hours}h` : hours ? `${hours}h ${minutes % 60}m` : `${minutes}m`}`;
+  }
+  return {
+    enabled: data?.enabled !== false,
+    remaining,
+    label: window?.label || 'Quota',
+    reset,
+    stale,
+    loading: !data && !cache.error,
+    tone: stale || remaining === null ? 'muted'
+      : window.usedPercent >= (data.criticalPercent ?? 95) ? 'blocked'
+      : window.usedPercent >= (data.warningPercent ?? 80) ? 'ansi3' : 'done',
+    text: remaining !== null ? `${Math.round(remaining)}% disponibile${stale ? ' · non aggiornato' : ''}`
+      : !data && !cache.error ? 'Lettura quota…' : 'Quota non disponibile',
+  };
+}

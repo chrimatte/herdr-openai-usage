@@ -1,0 +1,61 @@
+id = "local.openai-usage"
+name = "OpenAI Usage"
+version = "0.3.0"
+min_herdr_version = "0.9.5"
+description = "Quote OpenAI di Codex: utilizzo, disponibilità e ripristino."
+platforms = ["macos", "linux"]
+
+[[startup]]
+command = ["node", "src/cli.mjs", "auto-sync"]
+
+[[events]]
+on = "pane.created"
+command = ["node", "src/cli.mjs", "auto-event"]
+
+[[events]]
+on = "pane.agent_detected"
+command = ["node", "src/cli.mjs", "auto-event"]
+
+[[events]]
+on = "pane.agent_status_changed"
+command = ["node", "src/cli.mjs", "auto-event"]
+
+[[events]]
+on = "pane.closed"
+command = ["node", "src/cli.mjs", "auto-event"]
+
+[[actions]]
+id = "sync"
+title = "OpenAI: attiva sulle chat aperte"
+contexts = ["global", "workspace", "tab", "pane"]
+command = ["node", "src/cli.mjs", "auto-sync"]
+
+[[actions]]
+id = "open"
+title = "OpenAI: indicatore sotto la chat"
+contexts = ["global", "workspace", "tab", "pane"]
+command = ["node", "src/cli.mjs", "open"]
+
+[[actions]]
+id = "details"
+title = "OpenAI: dettagli utilizzo"
+contexts = ["workspace", "tab", "pane"]
+command = ["node", "src/cli.mjs", "details"]
+
+[[actions]]
+id = "dashboard"
+title = "OpenAI: apri pagina utilizzo"
+contexts = ["global", "workspace", "tab", "pane"]
+command = ["node", "src/cli.mjs", "dashboard"]
+
+[[panes]]
+id = "indicator"
+title = "OpenAI · quota disponibile"
+placement = "split"
+command = ["node", "src/cli.mjs", "watch", "--compact"]
+
+[[panes]]
+id = "monitor"
+title = "OpenAI Usage"
+placement = "overlay"
+command = ["node", "src/cli.mjs", "watch"]

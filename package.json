@@ -1,0 +1,16 @@
+{
+  "name": "herdr-openai-usage",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "description": "Monitor delle quote OpenAI del proprio account Codex in Herdr",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node src/cli.mjs watch",
+    "snapshot": "node src/cli.mjs snapshot",
+    "demo": "node src/cli.mjs demo",
+    "install:desktop": "node scripts/install-desktop.mjs",
+    "check": "node scripts/check.mjs",
+    "test": "node --test test/*.test.mjs"
+  }
+}
