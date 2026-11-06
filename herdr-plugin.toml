@@ -2,7 +2,7 @@ id = "local.openai-usage"
 name = "OpenAI Usage"
 version = "0.3.1"
 min_herdr_version = "0.9.5"
-description = "Quote OpenAI di Codex: utilizzo, disponibilità e ripristino."
+description = "OpenAI quotas for Codex: usage, availability and reset times."
 platforms = ["macos", "linux"]
 
 [[startup]]
@@ -26,31 +26,31 @@ command = ["node", "src/cli.mjs", "auto-event"]
 
 [[actions]]
 id = "sync"
-title = "OpenAI: attiva sulle chat aperte"
+title = "OpenAI: enable for open chats"
 contexts = ["global", "workspace", "tab", "pane"]
 command = ["node", "src/cli.mjs", "auto-sync"]
 
 [[actions]]
 id = "open"
-title = "OpenAI: indicatore sotto la chat"
+title = "OpenAI: indicator below the chat"
 contexts = ["global", "workspace", "tab", "pane"]
 command = ["node", "src/cli.mjs", "open"]
 
 [[actions]]
 id = "details"
-title = "OpenAI: dettagli utilizzo"
+title = "OpenAI: usage details"
 contexts = ["workspace", "tab", "pane"]
 command = ["node", "src/cli.mjs", "details"]
 
 [[actions]]
 id = "dashboard"
-title = "OpenAI: apri pagina utilizzo"
+title = "OpenAI: open usage page"
 contexts = ["global", "workspace", "tab", "pane"]
 command = ["node", "src/cli.mjs", "dashboard"]
 
 [[panes]]
 id = "indicator"
-title = "OpenAI · quota disponibile"
+title = "OpenAI · available quota"
 placement = "split"
 command = ["node", "src/cli.mjs", "watch", "--compact"]
 

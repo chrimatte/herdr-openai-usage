@@ -1,18 +1,19 @@
-# OpenAI Usage per Herdr
+# OpenAI Usage for Herdr
 
-Plugin locale Node.js senza dipendenze. Leggere [README.md](README.md) e [PROJECT.md](PROJECT.md) prima delle modifiche.
+Local Node.js plugin with no dependencies. Read [README.md](README.md) and [PROJECT.md](PROJECT.md) before making changes.
 
-- Il comportamento principale è un indicatore compatto sotto ogni chat Codex, aperto automaticamente senza sottrarre il focus. Evitare duplicati anche con eventi concorrenti e rimuovere solo l’indicatore associato alla chat chiusa. La vista dettagliata è secondaria.
-- Usare solo le API account documentate di Codex app-server; non avviare turni del modello per misurare l’utilizzo.
-- Non leggere, copiare o stampare token, email, identificativi o file di autenticazione. Dati sintetici nei test. Non persistere le quote.
-- Non assumere durate, prezzi o capienze del piano. Mostrare esplicitamente dati mancanti e letture precedenti dopo errori.
-- Usare HERDR_BIN_PATH per Herdr e argv senza shell. Configurazione sotto HERDR_PLUGIN_CONFIG_DIR; non scrivere dati utente nel progetto.
-- L’automazione può associare gli ID locali dei pannelli nei metadati Herdr e usare lock sotto HERDR_PLUGIN_STATE_DIR. Gli hook sono operazioni singole, non daemon. Rispettare autoOpen=false.
-- Applicare la skill development-workflow quando disponibile: preservare lo stato locale, definire l’esito, implementare, verificare e rivedere il diff.
-- Verifiche richieste: `npm run check`, `npm test`; per UI anche terminale interattivo e geometria del pannello. Node >=22, nessuna installazione di dipendenze.
-- Git: `main`, branch brevi e Conventional Commits. Non toccare configurazione Git globale o storia esistente. Commit soltanto con identità valida e controllo segreti.
-- Sorgenti della nuova app in `desktop/`, installazione con `npm run install:desktop`. Non modificare i mod/layout distribuiti da Herdr: usare il layout personale `openai-usage`. Eseguire il controllo nativo del mod e osservare una cattura dopo modifiche visive.
-- L’utente ha richiesto la prima pubblicazione pubblica su GitHub di questo progetto. Pubblicazioni successive restano entro le autorizzazioni della sessione; marketplace e scelta della licenza richiedono una richiesta specifica. Non aggiungere dati personali alle schermate pubbliche.
-- Per il contributo Codex usare il trailer riportato in CONTRIBUTING.md. Preservare l’identità Git dell’utente e la configurazione globale.
-- Nessuna delegazione salvo esplicita richiesta. Chiudere solo processi e pannelli creati per questo progetto.
-- Completamento: comportamento osservato, controlli superati, diff rivisto, limiti e stato locale/remoto riportati. Aggiornare PROJECT.md solo per decisioni o stato utili alla continuità.
+- The primary experience is a compact indicator below each Codex chat, opened automatically without stealing focus. Prevent duplicates even with concurrent events, and remove only the indicator associated with a closed chat. The detailed view is secondary.
+- Use only documented Codex app-server account APIs. Do not start model turns to measure usage.
+- Do not read, copy or print tokens, email addresses, account identifiers or authentication files. Use synthetic test data. Do not persist quotas.
+- Do not assume plan durations, prices or capacity. Explicitly label missing data and previous readings after errors.
+- Use HERDR_BIN_PATH for Herdr and argv arrays without a shell. Keep configuration under HERDR_PLUGIN_CONFIG_DIR; do not write user data into the project.
+- Automation may associate local pane IDs in Herdr metadata and use locks under HERDR_PLUGIN_STATE_DIR. Hooks are single-run operations, not daemons. Respect autoOpen=false.
+- Apply the development-workflow skill when available: preserve local state, define the outcome, implement, verify and review the diff.
+- Required checks: `npm run check` and `npm test`; for UI changes, also verify an interactive terminal and pane geometry. Node >=22; no dependency installation.
+- Git: `main`, short branches and Conventional Commits. Do not change global Git configuration or existing history. Commit only with a valid identity and after secret checks.
+- Desktop app sources are in `desktop/`; install with `npm run install:desktop`. Do not modify Herdr’s shipped mods or layouts: use the personal `openai-usage` layout. Run the native mod checker and inspect a screenshot after visual changes.
+- The user requested this project’s initial public GitHub publication. Subsequent publication must stay within session authorization; marketplace publishing and license changes require a specific request. Keep personal data out of public screenshots.
+- Use the Codex attribution trailer documented in CONTRIBUTING.md. Preserve the user’s Git identity and global configuration.
+- Keep maintained repository content and interface text in English. Historical titles may remain as migration identifiers to preserve existing installations.
+- Do not delegate unless explicitly requested. Close only processes and panes created for this project.
+- Completion requires observed behavior, passing checks, a reviewed diff, reported limitations and local/remote status. Update PROJECT.md only with decisions or state useful for continuity.

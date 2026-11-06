@@ -4,15 +4,15 @@ export function runHerdr(args, env = process.env) {
   const result = spawnSync(env.HERDR_BIN_PATH || 'herdr', args, {
     stdio: ['ignore', 'pipe', 'pipe'], encoding: 'utf8', timeout: 15000, windowsHide: true,
   });
-  if (result.error || result.status !== 0) throw new Error('Operazione Herdr non riuscita.');
+  if (result.error || result.status !== 0) throw new Error('Herdr operation failed.');
   // Metadata/reporting commands acknowledge success with an empty stdout.
   if (!result.stdout.trim()) return {};
   try { return JSON.parse(result.stdout).result; }
-  catch { throw new Error('Risposta Herdr non valida.'); }
+  catch { throw new Error('Invalid Herdr response.'); }
 }
 
 export function openPane({ details = false, env = process.env, run = (args) => runHerdr(args, env) } = {}) {
-  if (env.HERDR_ENV !== '1') throw new Error('Esegui questa azione da Herdr. Per il terminale usa: npm start.');
+  if (env.HERDR_ENV !== '1') throw new Error('Run this action from Herdr. For a standalone terminal, use: npm start.');
   const args = ['plugin', 'pane', 'open', '--plugin', 'local.openai-usage', '--entrypoint', details ? 'monitor' : 'indicator', '--placement', details ? 'overlay' : 'split'];
   if (!details) args.push('--direction', 'down', '--no-focus');
   // Herdr rejects --workspace together with an existing target pane.

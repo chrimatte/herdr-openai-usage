@@ -20,6 +20,6 @@ try {
     }))) ?? [],
   }));
 } catch {
-  console.error('Quote non disponibili. Verifica accesso Codex e configurazione del plugin.');
+  console.error('Quotas unavailable. Check your Codex sign-in and plugin configuration.');
   process.exitCode = 1;
 }

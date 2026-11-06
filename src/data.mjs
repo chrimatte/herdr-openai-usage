@@ -22,7 +22,7 @@ function normalizeCredits(value) {
 }
 
 export function normalizeSnapshot({ planType, quotas }, now = Date.now()) {
-  if (!quotas || typeof quotas !== 'object' || Array.isArray(quotas)) throw new Error('Formato delle quote Codex non valido.');
+  if (!quotas || typeof quotas !== 'object' || Array.isArray(quotas)) throw new Error('Invalid Codex quota format.');
   const byId = quotas.rateLimitsByLimitId;
   let entries = byId && typeof byId === 'object' && !Array.isArray(byId) ? Object.entries(byId) : [];
   entries = entries.filter(([, value]) => value && typeof value === 'object' && !Array.isArray(value));
@@ -44,17 +44,17 @@ export function normalizeSnapshot({ planType, quotas }, now = Date.now()) {
 
 export function windowLabel(window) {
   const mins = window.durationMinutes;
-  if (mins === 10080) return 'Settimana';
-  if (mins === null) return window.kind === 'primary' ? 'Quota primaria' : 'Quota secondaria';
-  if (mins % 1440 === 0) return `${mins / 1440} giorni`;
-  if (mins % 60 === 0) return `${mins / 60} ore`;
-  return `${mins} minuti`;
+  if (mins === 10080) return 'Week';
+  if (mins === null) return window.kind === 'primary' ? 'Primary quota' : 'Secondary quota';
+  if (mins % 1440 === 0) return `${mins / 1440} ${mins === 1440 ? 'day' : 'days'}`;
+  if (mins % 60 === 0) return `${mins / 60} ${mins === 60 ? 'hour' : 'hours'}`;
+  return `${mins} ${mins === 1 ? 'minute' : 'minutes'}`;
 }
 
 export function planLabel(value) {
   // Keep the server's tier identifier; do not infer price or entitlement from it.
   const labels = { pro: 'Pro', plus: 'Plus', free: 'Free', team: 'Team', business: 'Business', enterprise: 'Enterprise', edu: 'Edu' };
-  return labels[value] || (value?.startsWith('pro') ? `Pro (${cleanText(value)})` : cleanText(value) || 'Non disponibile');
+  return labels[value] || (value?.startsWith('pro') ? `Pro (${cleanText(value)})` : cleanText(value) || 'Unavailable');
 }
 
 export const demoSnapshot = () => normalizeSnapshot({ planType: 'pro', quotas: {

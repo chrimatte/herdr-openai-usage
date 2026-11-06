@@ -8,8 +8,9 @@ const pluginRoot = fileURLToPath(new URL('..', import.meta.url));
 const parentToken = 'openai_usage_parent';
 
 export function isIndicator(pane, root = pluginRoot) {
+  // Keep the previous title as a migration identifier for existing panes.
   return !!pane?.cwd && resolve(pane.cwd) === resolve(root)
-    && (pane.label === 'OpenAI · quota disponibile' || typeof pane.tokens?.[parentToken] === 'string');
+    && (['OpenAI · available quota', 'OpenAI · quota disponibile'].includes(pane.label) || typeof pane.tokens?.[parentToken] === 'string');
 }
 
 export function isCodexChat(pane, root = pluginRoot) {
@@ -33,7 +34,7 @@ export function findIndicator(snapshot, source, root = pluginRoot) {
 }
 
 async function withPaneLock(env, paneId, task) {
-  if (!env.HERDR_PLUGIN_STATE_DIR) throw new Error('Herdr non ha fornito la directory di stato del plugin.');
+  if (!env.HERDR_PLUGIN_STATE_DIR) throw new Error('Herdr did not provide the plugin state directory.');
   const key = createHash('sha256').update(`${env.HERDR_SOCKET_PATH || 'default'}:${paneId}`).digest('hex');
   const directory = join(env.HERDR_PLUGIN_STATE_DIR, 'auto-locks');
   const lock = join(directory, key);
@@ -77,7 +78,7 @@ export async function ensureIndicator(paneId, {
     if (!indicator) {
       const result = openPane({ env: { ...env, HERDR_PANE_ID: paneId }, run });
       indicator = result.opened?.plugin_pane?.pane;
-      if (!indicator?.pane_id) throw new Error('Herdr non ha restituito il nuovo indicatore.');
+      if (!indicator?.pane_id) throw new Error('Herdr did not return the new indicator.');
     }
     if (indicator.tokens?.[parentToken] !== paneId) {
       run(['pane', 'report-metadata', indicator.pane_id, '--source', 'local.openai-usage', '--token', `${parentToken}=${paneId}`]);
@@ -89,13 +90,13 @@ export async function ensureIndicator(paneId, {
 export function eventPaneId(raw) {
   let envelope;
   try { envelope = JSON.parse(raw || '{}'); }
-  catch { throw new Error('Evento Herdr non valido.'); }
+  catch { throw new Error('Invalid Herdr event.'); }
   const data = envelope.data || envelope;
   return typeof data.pane_id === 'string' ? data.pane_id : data.pane?.pane_id;
 }
 
 export async function autoSync(config, { env = process.env, run = (args) => runHerdr(args, env), root = pluginRoot, event = false } = {}) {
-  if (env.HERDR_ENV !== '1') throw new Error('L’apertura automatica richiede Herdr.');
+  if (env.HERDR_ENV !== '1') throw new Error('Automatic opening requires Herdr.');
   if (!config.autoOpen) return { status: 'disabled' };
   if (event) {
     const paneId = eventPaneId(env.HERDR_PLUGIN_EVENT_JSON);

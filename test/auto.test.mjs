@@ -17,7 +17,7 @@ async function fixture(t) {
     layouts: [{ tab_id: 'w1:t1', panes: [{ pane_id: source.pane_id, rect: { x: 0, y: 0, width: 60, height: 40 } }], splits: [] }],
   };
   const calls = [];
-  const indicator = { pane_id: 'w1:p3', tab_id: 'w1:t1', cwd: root, label: 'OpenAI · quota disponibile' };
+  const indicator = { pane_id: 'w1:p3', tab_id: 'w1:t1', cwd: root, label: 'OpenAI · available quota' };
   const addIndicator = () => {
     snapshot.panes.push(indicator);
     snapshot.layouts[0].panes[0].rect.height = 35;
@@ -64,7 +64,10 @@ test('a lock whose owner is still being written is not stolen', async (t) => {
 });
 
 test('startup adopts the existing manual indicator instead of duplicating it', async (t) => {
-  const f = await fixture(t); f.addIndicator();
+  const f = await fixture(t);
+  // Simulate a pane opened before the English translation.
+  f.indicator.label = 'OpenAI · quota disponibile';
+  f.addIndicator();
   const result = await autoSync({ autoOpen: true }, f);
   assert.equal(result.chats, 1);
   assert.equal(f.calls.filter((a) => a[2] === 'open').length, 0);
@@ -88,7 +91,7 @@ test('event envelope targets its own chat even when the focused pane differs', a
   assert.equal((await autoSync({ autoOpen: true }, { ...f, event: true })).status, 'opened');
   assert.ok(f.calls.find((a) => a[2] === 'open').includes(f.source.pane_id));
   assert.equal(eventPaneId('{"pane":{"pane_id":"created-pane"}}'), 'created-pane');
-  assert.throws(() => eventPaneId('invalid'), /non valido/);
+  assert.throws(() => eventPaneId('invalid'), /Invalid/);
 });
 
 test('disabled auto opening performs no Herdr calls and can still leave manual mode usable', async (t) => {

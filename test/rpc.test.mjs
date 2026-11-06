@@ -40,6 +40,6 @@ for (const mode of ['hang', 'exit', 'malformed', 'oversize']) test(`transport ${
 
 test('missing Codex reports setup instructions instead of a stack trace', async () => {
   const client = new CodexClient({ bin: 'herdr-usage-nonexistent-executable' });
-  try { await assert.rejects(client.connect(), /Codex CLI non trovata/); }
+  try { await assert.rejects(client.connect(), /Codex CLI not found/); }
   finally { await client.close(); }
 });

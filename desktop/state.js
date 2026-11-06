@@ -45,13 +45,13 @@ export function footerState(cache, now = Date.now()) {
   const age = now - Date.parse(data?.fetchedAt ?? '');
   const stale = !!data && (cache.error || !Number.isFinite(age) || age > Math.max(180000, (data.refreshSeconds || 60) * 3000));
   const seconds = Number.isFinite(window?.resetsAt) ? window.resetsAt - now / 1000 : null;
-  let reset = 'Ripristino non disponibile';
+  let reset = 'Reset time unavailable';
   if (seconds !== null) {
     const minutes = Math.ceil(Math.max(0, seconds) / 60);
     const days = Math.floor(minutes / 1440);
     const hours = Math.floor(minutes % 1440 / 60);
-    reset = seconds <= 0 ? 'Ripristino in attesa'
-      : `Ripristino tra ${days ? `${days}g ${hours}h` : hours ? `${hours}h ${minutes % 60}m` : `${minutes}m`}`;
+    reset = seconds <= 0 ? 'Reset pending'
+      : `Resets in ${days ? `${days}d ${hours}h` : hours ? `${hours}h ${minutes % 60}m` : `${minutes}m`}`;
   }
   return {
     enabled: data?.enabled !== false,
@@ -63,7 +63,7 @@ export function footerState(cache, now = Date.now()) {
     tone: stale || remaining === null ? 'muted'
       : window.usedPercent >= (data.criticalPercent ?? 95) ? 'blocked'
       : window.usedPercent >= (data.warningPercent ?? 80) ? 'ansi3' : 'done',
-    text: remaining !== null ? `${Math.round(remaining)}% disponibile${stale ? ' · non aggiornato' : ''}`
-      : !data && !cache.error ? 'Lettura quota…' : 'Quota non disponibile',
+    text: remaining !== null ? `${Math.round(remaining)}% available${stale ? ' · stale' : ''}`
+      : !data && !cache.error ? 'Reading quota…' : 'Quota unavailable',
   };
 }

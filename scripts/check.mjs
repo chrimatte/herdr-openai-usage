@@ -7,4 +7,4 @@ for (const dir of ['src', 'scripts', 'test', 'test/fixtures', 'desktop']) {
     if (result.status !== 0) process.exit(result.status || 1);
   }
 }
-console.log('Sintassi JavaScript verificata.');
+console.log('JavaScript syntax checks passed.');

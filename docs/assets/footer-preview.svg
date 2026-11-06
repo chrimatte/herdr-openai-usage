@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1120" height="120" viewBox="0 0 1120 120" role="img" aria-labelledby="title desc">
-  <title id="title">OpenAI Usage nella fascia inferiore della chat</title>
-  <desc id="desc">Esempio illustrativo: barra della quota disponibile al 76 percento, finestra settimanale e ripristino tra cinque giorni e diciannove ore.</desc>
+  <title id="title">OpenAI Usage in the chat footer</title>
+  <desc id="desc">Illustrative example: 76 percent available quota, a weekly window and a reset in five days and nineteen hours.</desc>
   <rect width="1120" height="120" rx="12" fill="#101214"/>
   <rect x="16" y="16" width="1088" height="88" rx="9" fill="#191b1e" stroke="#373c43"/>
-  <text x="38" y="48" fill="#7f8792" font-family="ui-monospace,monospace" font-size="12">Chat Codex</text>
+  <text x="38" y="48" fill="#7f8792" font-family="ui-monospace,monospace" font-size="12">Codex chat</text>
   <path d="M17 64h1086" stroke="#2c3138"/>
   <g font-family="system-ui,sans-serif" font-size="13">
     <text x="38" y="89" fill="#e0e5ec" font-weight="600">OpenAI</text>
     <rect x="109" y="80" width="128" height="5" rx="2.5" fill="#343b45"/>
     <rect x="109" y="80" width="97.28" height="5" rx="2.5" fill="#80aaff"/>
-    <text x="255" y="89" fill="#80aaff">76% disponibile</text>
-    <text x="373" y="89" fill="#939ba6">settimana</text>
-    <text x="464" y="89" fill="#939ba6">Ripristino tra 5g 19h</text>
+    <text x="255" y="89" fill="#80aaff">76% available</text>
+    <text x="373" y="89" fill="#939ba6">week</text>
+    <text x="464" y="89" fill="#939ba6">Resets in 5d 19h</text>
     <text x="1030" y="90" fill="#939ba6" font-size="18">↻</text>
     <text x="1066" y="89" fill="#939ba6" font-size="17">↗</text>
   </g>

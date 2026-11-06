@@ -1,4 +1,5 @@
 {
   "place": "none",
-  "title": "OpenAI Usage · barra chat"
+  "id": "local.openai-usage.footer",
+  "title": "OpenAI Usage · chat footer"
 }

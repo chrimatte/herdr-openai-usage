@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createCache, footerState, refreshCache, isLocalCodex } from '../desktop/state.js';
 
 const now = Date.parse('2026-11-06T18:00:00Z');
-const data = (windows = [{ usedPercent: 26, label: 'Settimana', resetsAt: now / 1000 + 3600 }]) => ({
+const data = (windows = [{ usedPercent: 26, label: 'Week', resetsAt: now / 1000 + 3600 }]) => ({
   enabled: true, refreshSeconds: 60, warningPercent: 80, criticalPercent: 95,
   fetchedAt: new Date(now).toISOString(), windows,
 });
@@ -18,10 +18,10 @@ test('the local account is never attributed to remote Codex chats or other progr
 
 test('footer chooses the most constrained known window and clamps exhausted quota', () => {
   const cache = createCache();
-  cache.data = data([{ usedPercent: null }, { usedPercent: 20 }, { usedPercent: 110, label: '3 ore' }]);
+  cache.data = data([{ usedPercent: null }, { usedPercent: 20 }, { usedPercent: 110, label: '3 hours' }]);
   assert.equal(footerState(cache, now).remaining, 0);
   assert.equal(footerState(cache, now).tone, 'blocked');
-  assert.equal(footerState(cache, now).label, '3 ore');
+  assert.equal(footerState(cache, now).label, '3 hours');
 });
 
 test('missing quota and reset are explicit instead of presented as a full plan', () => {
@@ -29,14 +29,14 @@ test('missing quota and reset are explicit instead of presented as a full plan',
   cache.data = data([{ usedPercent: null, resetsAt: null }]);
   const state = footerState(cache, now);
   assert.equal(state.remaining, null);
-  assert.equal(state.text, 'Quota non disponibile');
-  assert.equal(state.reset, 'Ripristino non disponibile');
+  assert.equal(state.text, 'Quota unavailable');
+  assert.equal(state.reset, 'Reset time unavailable');
 });
 
 test('expired resets remain pending until a confirmed service reading', () => {
   const cache = createCache();
   cache.data = data([{ usedPercent: 26, resetsAt: now / 1000 - 1 }]);
-  assert.equal(footerState(cache, now).reset, 'Ripristino in attesa');
+  assert.equal(footerState(cache, now).reset, 'Reset pending');
   assert.equal(footerState(cache, now).remaining, 74);
 });
 
@@ -59,11 +59,11 @@ test('an abandoned read after native reload cannot block or overwrite a new read
   let freshRead = false;
   const nextRead = refreshCache(cache, async () => {
     freshRead = true;
-    return data([{ usedPercent: 40, label: 'Settimana' }]);
+    return data([{ usedPercent: 40, label: 'Week' }]);
   }, now + 45000);
   assert.equal(freshRead, true);
   await nextRead;
-  release(data([{ usedPercent: 10, label: 'Settimana' }]));
+  release(data([{ usedPercent: 10, label: 'Week' }]));
   await oldRead;
   assert.equal(footerState(cache, now + 45000).remaining, 60);
 });
@@ -74,7 +74,7 @@ test('errors retain the previous reading, mark it stale and back off', async () 
   await refreshCache(cache, async () => { throw new Error('upstream'); }, now + 60000);
   const state = footerState(cache, now + 60000);
   assert.equal(state.remaining, 74);
-  assert.match(state.text, /non aggiornato/);
+  assert.match(state.text, /stale/);
   assert.equal(cache.nextAt, now + 180000);
 });
 

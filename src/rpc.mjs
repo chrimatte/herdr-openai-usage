@@ -17,7 +17,7 @@ export class CodexClient {
   }
 
   async connect() {
-    if (this.closed) throw new MonitorError('Connessione Codex chiusa.');
+    if (this.closed) throw new MonitorError('Codex connection closed.');
     // A separate process group keeps this read-only app-server out of Herdr's
     // foreground coding-agent detection. The client still owns and kills it.
     this.child = spawn(this.bin, this.args, {
@@ -27,14 +27,14 @@ export class CodexClient {
     this.child.stdout.setEncoding('utf8');
     this.child.stdout.on('data', (chunk) => {
       buffer += chunk;
-      if (buffer.length > 1024 * 1024) { this.fail(new MonitorError('Risposta Codex troppo grande.')); return; }
+      if (buffer.length > 1024 * 1024) { this.fail(new MonitorError('Codex response is too large.')); return; }
       let end;
       while ((end = buffer.indexOf('\n')) >= 0) {
         const line = buffer.slice(0, end); buffer = buffer.slice(end + 1);
         if (!line.trim()) continue;
         let msg;
         try { msg = JSON.parse(line); }
-        catch { this.fail(new MonitorError('Risposta Codex non valida.')); return; }
+        catch { this.fail(new MonitorError('Invalid Codex response.')); return; }
         if (!msg || typeof msg !== 'object') continue;
         if (msg.method) {
           if (msg.id !== undefined) this.send({ id: msg.id, error: { code: -32601, message: 'Method not supported' } });
@@ -45,15 +45,15 @@ export class CodexClient {
         clearTimeout(request.timer); this.pending.delete(msg.id);
         if (msg.error) {
           // Do not expose server errors: they may include local paths or credentials.
-          request.reject(new MonitorError('Codex non ha restituito i dati richiesti. Verifica accesso e versione della CLI.', 'rpc'));
+          request.reject(new MonitorError('Codex did not return the requested data. Check your sign-in and CLI version.', 'rpc'));
         } else request.resolve(msg.result);
       }
     });
     this.child.on('error', (error) => this.fail(new MonitorError(
-      error.code === 'ENOENT' ? 'Codex CLI non trovata. Installa Codex o configura codexPath.' : 'Impossibile avviare Codex CLI.', 'process',
+      error.code === 'ENOENT' ? 'Codex CLI not found. Install Codex or set codexPath.' : 'Could not start Codex CLI.', 'process',
     )));
-    this.child.on('exit', () => this.fail(new MonitorError('La connessione a Codex è terminata.', 'process')));
-    this.child.stdin.on('error', () => this.fail(new MonitorError('Connessione a Codex interrotta.', 'process')));
+    this.child.on('exit', () => this.fail(new MonitorError('The Codex connection ended.', 'process')));
+    this.child.stdin.on('error', () => this.fail(new MonitorError('Codex connection interrupted.', 'process')));
     await this.request('initialize', { clientInfo: { name: 'herdr_openai_usage', title: 'Herdr OpenAI Usage', version: '0.1.0' } });
     this.send({ method: 'initialized', params: {} });
   }
@@ -64,12 +64,12 @@ export class CodexClient {
   }
 
   request(method, params) {
-    if (this.closed) return Promise.reject(new MonitorError('Connessione Codex chiusa.'));
+    if (this.closed) return Promise.reject(new MonitorError('Codex connection closed.'));
     const id = this.nextId++;
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
         this.pending.delete(id);
-        reject(new MonitorError('Codex non risponde. Riprova fra qualche istante.', 'timeout'));
+        reject(new MonitorError('Codex is not responding. Try again shortly.', 'timeout'));
       }, this.timeoutMs);
       this.pending.set(id, { resolve, reject, timer });
       this.send({ id, method, ...(params === undefined ? {} : { params }) });
@@ -78,9 +78,9 @@ export class CodexClient {
 
   async read() {
     const info = await this.request('account/read', { refreshToken: false });
-    if (!info?.account) throw new MonitorError('Accesso richiesto: esegui codex login e accedi con ChatGPT.', 'auth');
+    if (!info?.account) throw new MonitorError('Sign-in required: run codex login and sign in with ChatGPT.', 'auth');
     if (info.account.type !== 'chatgpt') {
-      throw new MonitorError('Il monitor richiede accesso Codex con ChatGPT. L’accesso tramite API key usa quote separate.', 'auth');
+      throw new MonitorError('The monitor requires Codex sign-in with ChatGPT. API key access uses separate quotas.', 'auth');
     }
     const quotas = await this.request('account/rateLimits/read');
     // Account e-mail and identifiers never leave this boundary.
@@ -100,7 +100,7 @@ export class CodexClient {
 
   async close() {
     const child = this.child;
-    this.fail(new MonitorError('Connessione Codex chiusa.'));
+    this.fail(new MonitorError('Codex connection closed.'));
     if (!child || child.exitCode !== null || child.signalCode !== null || !child.pid) return;
     await new Promise((resolve) => {
       const timer = setTimeout(() => { child.kill('SIGKILL'); resolve(); }, 1500);

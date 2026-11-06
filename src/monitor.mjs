@@ -42,7 +42,7 @@ export async function watch(config, { demo = null, openDashboard = () => {}, com
       state.snapshot = snapshot; state.error = null; failures = 0;
     } catch (error) {
       if (stopped) return;
-      state.error = error instanceof MonitorError ? error.message : 'Dati Codex non disponibili. Riprova o consulta la pagina utilizzo.';
+      state.error = error instanceof MonitorError ? error.message : 'Codex data unavailable. Try again or open the usage page.';
       failures += 1; await client?.close(); client = null;
     } finally {
       state.loading = false;
@@ -57,7 +57,7 @@ export async function watch(config, { demo = null, openDashboard = () => {}, com
   const keypress = (_str, key = {}) => {
     if (key.name === 'q' || key.name === 'escape' || key.ctrl && key.name === 'c') stop();
     else if (key.name === 'r') startRefresh();
-    else if (key.name === 'o') { try { openDashboard(); } catch { state.notice = 'Impossibile aprire il browser.'; draw(); } }
+    else if (key.name === 'o') { try { openDashboard(); } catch { state.notice = 'Could not open the browser.'; draw(); } }
     else if (key.name === 'up' || key.name === 'k') { offset -= 1; draw(); }
     else if (key.name === 'down' || key.name === 'j') { offset += 1; draw(); }
     else if (key.name === 'pageup') { offset -= 10; draw(); }

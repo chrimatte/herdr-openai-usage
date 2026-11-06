@@ -3,7 +3,7 @@
   "version": "0.3.1",
   "private": true,
   "type": "module",
-  "description": "Monitor delle quote OpenAI del proprio account Codex in Herdr",
+  "description": "Monitor your Codex account’s OpenAI quotas in Herdr",
   "license": "MIT",
   "engines": { "node": ">=22" },
   "scripts": {

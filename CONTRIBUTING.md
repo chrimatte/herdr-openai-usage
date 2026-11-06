@@ -1,6 +1,6 @@
-# Contribuire
+# Contributing
 
-Il progetto usa Node.js 22 o successivo e non richiede pacchetti da installare.
+The project uses Node.js 22 or later and requires no package installation.
 
 ```sh
 npm run check
@@ -8,23 +8,23 @@ npm test
 npm run demo -- --compact
 ```
 
-I test usano dati sintetici e un app-server simulato: non richiedono autenticazione, non leggono credenziali e non generano turni del modello.
+Tests use synthetic data and a mock app-server: they require no sign-in, read no credentials and generate no model turns.
 
-## Modifiche
+## Making changes
 
-Usa branch brevi `feat/<tema>`, `fix/<tema>` o `chore/<tema>`, partendo da `main`. I commit seguono Conventional Commits, per esempio `fix: preserve previous quota after a failed refresh`. Apri una pull request con il comportamento cambiato e le verifiche eseguite.
+Use short branches such as `feat/<topic>`, `fix/<topic>` or `chore/<topic>`, starting from `main`. Follow Conventional Commits, for example `fix: preserve previous quota after a failed refresh`. Open a pull request describing the behavior change and the checks performed.
 
-Per attivare il controllo locale prima dei commit, verifica prima di non avere hook personali da preservare, poi esegui:
+To enable the local pre-commit checks, first make sure you have no personal hooks to preserve, then run:
 
 ```sh
 git config --local core.hooksPath .githooks
 ```
 
-L’hook verifica whitespace e sintassi; se Gitleaks è già disponibile esegue anche una scansione staged con valori oscurati. La suite completa resta disponibile con `npm test` e viene eseguita in CI. Gli hook non installano strumenti e non modificano lo staging.
+The hook checks whitespace and syntax. If Gitleaks is already available, it also scans staged changes with secrets redacted. Run the full suite with `npm test`; it also runs in CI. Hooks do not install tools or change the staging area.
 
-## Interfaccia Herdr
+## Herdr interface
 
-I sorgenti della fascia della nuova app sono in `desktop/`; `src/footer-data.mjs` fornisce soltanto i dati necessari alla vista. Dopo una modifica:
+The desktop footer sources are in `desktop/`; `src/footer-data.mjs` provides only the data needed by the view. After a change:
 
 ```sh
 npm run install:desktop
@@ -33,15 +33,17 @@ herdr-app status
 herdr-app shot /tmp/openai-usage.png
 ```
 
-Esamina la cattura prima di considerare verificata la UI. Il controllo nativo da solo non copre layout e stati asincroni. Mantieni focus sulla chat, barra compatta, leggibilità nei pannelli stretti e indicazione esplicita dei dati precedenti dopo un errore. Non modificare mod o layout distribuiti da Herdr.
+Inspect the screenshot before considering the UI verified. The native checker alone does not cover layout or asynchronous states. Preserve chat focus, a compact footer, readability in narrow panes and an explicit stale-data message after errors. Do not modify Herdr’s shipped mods or layouts.
 
-Il plugin da terminale è separato e resta in `src/auto.mjs` e `src/herdr.mjs`. Prova aperture concorrenti e chiusura della chat quando cambi gli hook.
+The terminal plugin is separate, in `src/auto.mjs` and `src/herdr.mjs`. Check concurrent opens and chat closure when changing hooks.
 
-## Dati e attribuzione
+## Data and attribution
 
-Usa solo le API documentate di Codex app-server. Non aggiungere letture di file di autenticazione, token, email o identificativi dell’account, né richieste al modello per misurare le quote. Non salvare quote su disco. Non allegare schermate o log con informazioni personali alle issue.
+Use only documented Codex app-server APIs. Do not add reads of authentication files, tokens, email addresses or account identifiers, or model requests to measure quotas. Do not save quotas to disk. Do not attach screenshots or logs containing personal information to issues.
 
-I contributi svolti con Codex possono includere il trailer di coautore collegato al suo account GitHub:
+Keep maintained documentation, interface text, CLI messages, code comments and repository metadata in English. Preserve command names, configuration keys and migration identifiers when translating.
+
+Contributions made with Codex may include the coauthor trailer linked to its GitHub account:
 
 ```text
 Co-authored-by: Codex <199175422+chatgpt-codex-connector[bot]@users.noreply.github.com>

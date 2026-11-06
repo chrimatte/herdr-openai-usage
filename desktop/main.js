@@ -74,7 +74,7 @@ export default class OpenAIUsageFooter extends View {
       root.child(div().flex_none().font_medium().text_color(t.foreground).child('OpenAI'));
       if (state.remaining !== null && this.width >= 360) {
         root.child(div().w(width).h(4).flex_none().rounded(2).overflow_hidden().bg(t.selected)
-          .role('progress_indicator').accessibility_label(`Quota OpenAI disponibile: ${Math.round(state.remaining)}%`)
+          .role('progress_indicator').accessibility_label(`Available OpenAI quota: ${Math.round(state.remaining)}%`)
           .child(div().w(width * state.remaining / 100).h(4).rounded(2).bg(color)));
       }
       root.child(div().flex_none().text_color(color).tooltip(`${state.label} · ${state.text} · ${state.reset}`)
@@ -82,13 +82,13 @@ export default class OpenAIUsageFooter extends View {
       if (!compact) root.child(div().flex_none().text_color(t.dim).child(state.label.toLowerCase()));
       if (this.width >= 820) root.child(div().truncate().text_color(t.dim).child(state.reset));
       root.child(div().flex_1());
-      root.child(this.button(t, `quota-refresh-${paneId}`, 'Aggiorna quota OpenAI', '↻', (cx) => this.refresh(cx, true)));
-      if (this.width >= 400) root.child(this.button(t, `quota-page-${paneId}`, 'Apri pagina utilizzo', '↗', (cx) => {
+      root.child(this.button(t, `quota-refresh-${paneId}`, 'Refresh OpenAI quota', '↻', (cx) => this.refresh(cx, true)));
+      if (this.width >= 400) root.child(this.button(t, `quota-page-${paneId}`, 'Open usage page', '↗', (cx) => {
         cx.spawn(async () => {
           try {
             const result = await exec('/usr/bin/env', this.args('cli.mjs', ['dashboard']), { cwd: props().sourceRoot });
             if (result.code !== 0) throw new Error('Browser unavailable');
-          } catch { notify({ title: 'OpenAI Usage', body: 'Impossibile aprire la pagina utilizzo.', level: 'error' }); }
+          } catch { notify({ title: 'OpenAI Usage', body: 'Could not open the usage page.', level: 'error' }); }
         });
       }));
     } else {
@@ -102,15 +102,15 @@ export default class OpenAIUsageFooter extends View {
     }
 
     if (pane.status === 'working') root.child(svg('mods/workspace-chrome/spinner.svg').size(11).flex_none().text_color(t.working).spin(900));
-    else if (pane.status === 'blocked') root.child(div().flex_none().text_color(t.blocked).child('Richiede attenzione'));
+    else if (pane.status === 'blocked') root.child(div().flex_none().text_color(t.blocked).child('Needs attention'));
     else if (pane.status === 'done') root.child(div().size(6).flex_none().rounded(3).bg(t.done));
 
     if (this.hovered && this.width >= 620) {
       for (const [icon, label, command, args] of [
-        ['split-right', 'Dividi a destra', 'pane.split', { direction: 'right', pane: paneId }],
-        ['split-down', 'Dividi sotto', 'pane.split', { direction: 'down', pane: paneId }],
-        [pane.zoomed ? 'unzoom' : 'zoom', 'Espandi o ripristina chat', 'pane.zoom', { pane: paneId }],
-        ['close', 'Chiudi pannello', 'pane.close', { pane: paneId }],
+        ['split-right', 'Split right', 'pane.split', { direction: 'right', pane: paneId }],
+        ['split-down', 'Split below', 'pane.split', { direction: 'down', pane: paneId }],
+        [pane.zoomed ? 'unzoom' : 'zoom', 'Expand or restore chat', 'pane.zoom', { pane: paneId }],
+        ['close', 'Close pane', 'pane.close', { pane: paneId }],
       ]) root.child(this.button(t, `quota-${icon}-${paneId}`, label,
         svg(`mods/pane/${icon}.svg`).size(13), () => run(command, args)));
     }

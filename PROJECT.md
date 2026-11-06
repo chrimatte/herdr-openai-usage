@@ -1,29 +1,31 @@
-# Stato del progetto
+# Project state
 
-Aggiornato: 2026-11-06. Versione: 0.3.1.
+Updated: 2026-11-06. Version: 0.3.1.
 
-## Obiettivo e decisioni
+## Objective and decisions
 
-Mostrare le quote dell’account Codex autenticato con ChatGPT nel bordo inferiore di ogni chat Herdr. La fascia della nuova app è alta 32 px, con barra della disponibilità, percentuale, finestra e ripristino. La vista dettagliata è secondaria. I controlli del pannello e lo stato agente sono nella fascia inferiore.
+Show quotas for a Codex account authenticated with ChatGPT in the footer of each Herdr chat. The desktop footer is 32 px high and contains an availability bar, percentage, usage window and reset time. The detailed view is secondary. Pane controls and agent status are in the footer.
 
-Lettura solo attraverso le API account documentate di Codex app-server; nessuna API key aggiuntiva, nessun turno del modello e nessuna quota o credenziale persistita. Le normali chat ChatGPT non hanno contatori in questa integrazione. La quota locale non viene attribuita a chat remote.
+Read only documented Codex app-server account APIs. No additional API key, model turns, or persisted quotas or credentials. Regular ChatGPT chats have no counters in this integration. Local quota must not be attributed to remote chats.
 
-## Stato locale
+The user requested English throughout the repository, including documentation, UI and CLI text, assets, tests and GitHub metadata. Preserve commands and configuration keys. Previous Italian titles remain only as migration identifiers for existing panes and mods.
 
-Cartella canonica: `~/Documents/herdr-openai-usage`. Un collegamento dalla posizione precedente mantiene compatibili i riferimenti locali. Il plugin Herdr da terminale è collegato al nuovo percorso. Nella nuova app sono installati il mod personale `openai-usage-footer` e il layout `openai-usage`; nessun file distribuito da Herdr è modificato. Il pannello dettagliato temporaneo è stato chiuso.
+## Local state
 
-`desktop/` contiene il mod nativo e la cache condivisa solo in memoria. `src/footer-data.mjs` espone dati minimi per la vista. `npm run install:desktop` installa o aggiorna il mod e il percorso del checkout. Le copie condividono le letture; gli errori conservano il dato precedente, segnalato come non aggiornato. `autoOpen: false` viene rispettato.
+Canonical folder: `~/Documents/herdr-openai-usage`. A symlink from the previous location preserves local references. The terminal Herdr plugin points to the new path. The desktop app uses the personal `openai-usage-footer` mod and `openai-usage` layout; Herdr’s shipped files are untouched. The temporary detailed-view pane has been closed.
 
-L’integrazione da terminale mantiene gli hook su creazione, rilevamento, stato, chiusura e avvio. Lock e metadati associano un indicatore a ogni chat, senza duplicazioni concorrenti. I test di questa integrazione restano validi.
+`desktop/` contains the native mod and its shared, memory-only cache. `src/footer-data.mjs` exposes minimal display data. `npm run install:desktop` installs or updates the mod and checkout path. Instances share readings; errors retain the previous value, explicitly marked as stale. `autoOpen: false` is respected.
 
-## Git e pubblicazione
+The terminal integration retains creation, detection, status, closure and startup hooks. Locks and metadata associate one indicator with each chat without concurrent duplicates. Existing tests cover this integration.
 
-Repository richiesta dall’utente: `https://github.com/chrimatte/herdr-openai-usage`, pubblica, branch principale `main`. La prima pubblicazione dell’intero plugin è autorizzata; Codex deve essere indicato come coautore. Identità e hook sono configurati solo nella repository, senza modificare Git globale. L’utente ha scelto la licenza MIT, con copyright 2026 Christian Matteotti; testo in LICENSE e identificatore SPDX nel manifest npm.
+## Git and publication
 
-README e guida per contributori descrivono installazione, limiti, dati e verifiche. La CI usa action fissate a commit verificati e prova Node.js 22/26 su macOS/Linux. Non confondere la CI automatica con la verifica del rendering nativo.
+Public repository: `https://github.com/chrimatte/herdr-openai-usage`, default branch `main`. The user authorized initial publication and the subsequent MIT license and English updates. Credit Codex as a coauthor. Git identity and hooks are repository-local; global Git configuration is unchanged. The user selected the MIT license, copyright 2026 Christian Matteotti, with its text in LICENSE and SPDX identifier in the npm manifest.
 
-## Verifiche e continuità
+The README and contribution guide cover setup, limitations, data and verification. CI actions are pinned to verified commits and test Node.js 22/26 on macOS/Linux. Automated CI does not verify native rendering.
 
-40 test automatici, incluso il recupero di una lettura abbandonata dopo ricaricamento nativo senza sovrascrivere i dati nuovi. Controllo nativo del mod e verifica visiva con quote reali, senza sottrarre il focus alla chat. Herdr app 0.1.13, Herdr da terminale 0.9.5, Codex CLI 0.167.0, Node.js 26; Linux non collaudato dal vivo per la UI. La prima CI pubblica su Node 22/26, macOS/Linux è passata; verificare ogni nuovo SHA prima di dichiarare la CI aggiornata.
+## Verification and handoff
 
-Per proseguire: rileggere stato Git e remoto, mantenere il checkout perché il mod lo esegue, usare i controlli di CONTRIBUTING.md e verificare una cattura dopo modifiche visive. Nessuna delegazione salvo richiesta esplicita. Pubblicare solo entro il consenso della sessione.
+The 40-test suite includes recovery from a read abandoned during native reload without overwriting newer data. Native mod checks and screenshots have verified real quota display without stealing chat focus. Tested with Herdr app 0.1.13, terminal Herdr 0.9.5, Codex CLI 0.167.0 and Node.js 26. The Linux UI has not been tested live. CI has passed on Node 22/26 and macOS/Linux; check each new SHA before reporting the latest CI as successful.
+
+To continue: inspect local and remote Git state, keep the checkout because the mod runs it, follow CONTRIBUTING.md, and inspect a screenshot after visual changes. Do not delegate without an explicit request. Publish only within current session authorization.

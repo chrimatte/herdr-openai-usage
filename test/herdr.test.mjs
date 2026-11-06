@@ -5,7 +5,7 @@ const env = { HERDR_ENV: '1', HERDR_PANE_ID: 'workspace:p1', HERDR_WORKSPACE_ID:
 
 test('Herdr reporting commands can succeed without a JSON response', () => {
   assert.deepEqual(runHerdr(['-e', 'process.exit(0)'], { HERDR_BIN_PATH: process.execPath }), {});
-  assert.throws(() => runHerdr(['-e', 'console.log("invalid")'], { HERDR_BIN_PATH: process.execPath }), /non valida/);
+  assert.throws(() => runHerdr(['-e', 'console.log("invalid")'], { HERDR_BIN_PATH: process.execPath }), /Invalid/);
 });
 
 test('indicator opens below the chat without stealing focus or conflicting workspace flags', () => {
@@ -36,5 +36,5 @@ test('resize failure preserves the successfully opened indicator', () => {
   const result = openPane({ env, run() { if (++count === 1) return { opened: true }; throw new Error('unsupported'); } });
   assert.deepEqual(result.opened, { opened: true });
   assert.equal(result.resizeWarning, true);
-  assert.throws(() => openPane({ env: {} }), /da Herdr/);
+  assert.throws(() => openPane({ env: {} }), /from Herdr/);
 });

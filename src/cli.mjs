@@ -12,19 +12,19 @@ function openDashboard() {
   const [bin, args] = process.platform === 'darwin' ? ['open', [dashboardUrl]]
     : process.platform === 'win32' ? ['rundll32.exe', ['url.dll,FileProtocolHandler', dashboardUrl]] : ['xdg-open', [dashboardUrl]];
   const result = spawnSync(bin, args, { stdio: 'ignore', timeout: 5000, windowsHide: true });
-  if (result.error || result.status !== 0) throw new Error('Impossibile aprire la pagina utilizzo nel browser.');
+  if (result.error || result.status !== 0) throw new Error('Could not open the usage page in your browser.');
 }
 
 async function main() {
   const [command = 'watch', ...args] = process.argv.slice(2);
   if (command === 'help' || command === '--help' || command === '-h') {
-    console.log('OpenAI Usage per Herdr\n\nwatch [--compact] Monitor interattivo\nsnapshot [--json] Quote attuali\ndemo [--compact]  Anteprima senza accesso a Codex\nopen              Indicatore sotto la chat\ndetails           Monitor Herdr in overlay\ndashboard         Pagina ufficiale utilizzo');
+    console.log('OpenAI Usage for Herdr\n\nwatch [--compact] Interactive monitor\nsnapshot [--json] Current quotas\ndemo [--compact]  Preview without accessing Codex\nopen              Indicator below the chat\ndetails           Herdr monitor overlay\ndashboard         Official usage page');
     return;
   }
   if (command === 'open' || command === 'details') {
     const { opened, resizeWarning } = openPane({ details: command === 'details' });
     console.log(JSON.stringify(opened));
-    if (resizeWarning) console.error('Indicatore aperto. Puoi ridimensionare il pannello con Herdr.');
+    if (resizeWarning) console.error('Indicator opened. You can resize the pane in Herdr.');
     return;
   }
   if (command === 'dashboard') return openDashboard();
@@ -33,7 +33,7 @@ async function main() {
     return;
   }
   if (!['watch', 'snapshot', 'demo'].includes(command) || args.some((arg) => command === 'snapshot' ? arg !== '--json' : arg !== '--compact')) {
-    throw new Error('Comando non valido. Usa: node src/cli.mjs --help.');
+    throw new Error('Invalid command. Run: node src/cli.mjs --help.');
   }
   const config = await loadConfig();
   if (command === 'snapshot') {
@@ -49,6 +49,6 @@ async function main() {
 try { await main(); }
 catch (error) {
   const safe = error instanceof MonitorError || error?.constructor === Error;
-  console.error(safe ? error.message : 'Errore del monitor. Verifica configurazione e accesso Codex.');
+  console.error(safe ? error.message : 'Monitor error. Check your configuration and Codex sign-in.');
   process.exitCode = 1;
 }

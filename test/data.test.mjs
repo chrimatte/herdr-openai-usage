@@ -11,8 +11,8 @@ test('uses live durations and prefers multi-bucket data over legacy duplicate', 
   assert.equal(snapshot.buckets.length, 2);
   assert.equal(snapshot.buckets[0].windows[0].remainingPercent, 77);
   assert.equal(snapshot.buckets[0].windows.length, 1);
-  assert.equal(windowLabel(snapshot.buckets[0].windows[0]), 'Settimana');
-  assert.equal(windowLabel(snapshot.buckets[1].windows[0]), '5 ore');
+  assert.equal(windowLabel(snapshot.buckets[0].windows[0]), 'Week');
+  assert.equal(windowLabel(snapshot.buckets[1].windows[0]), '5 hours');
   assert.equal(planLabel(snapshot.planType), 'Pro (prolite)');
   assert.equal(JSON.stringify(snapshot).includes('private'), false);
 });
