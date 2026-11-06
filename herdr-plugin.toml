@@ -1,6 +1,6 @@
 id = "local.openai-usage"
 name = "OpenAI Usage"
-version = "0.3.0"
+version = "0.3.1"
 min_herdr_version = "0.9.5"
 description = "Quote OpenAI di Codex: utilizzo, disponibilità e ripristino."
 platforms = ["macos", "linux"]

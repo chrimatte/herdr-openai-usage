@@ -1,5 +1,5 @@
 export function createCache() {
-  return { data: null, error: false, failures: 0, nextAt: 0, lastAttempt: -Infinity, pending: null };
+  return { data: null, error: false, failures: 0, nextAt: 0, lastAttempt: -Infinity, pending: null, revision: 0 };
 }
 
 export function isLocalCodex(pane) {
@@ -8,26 +8,31 @@ export function isLocalCodex(pane) {
 }
 
 export async function refreshCache(cache, load, now = Date.now(), force = false) {
-  if (cache.pending) return cache.pending;
+  // Native exec has a 30 s limit; a view reload can abandon its JS promise.
+  if (cache.pending && now - cache.lastAttempt < 35000) return cache.pending;
   if ((!force && now < cache.nextAt) || now - cache.lastAttempt < 5000) return;
   cache.lastAttempt = now;
-  cache.pending = (async () => {
+  const revision = ++cache.revision;
+  const request = (async () => {
     try {
       const data = await load();
       if (!data || typeof data.enabled !== 'boolean' || !Array.isArray(data.windows)) throw new Error('Invalid display data');
+      if (cache.revision !== revision) return;
       cache.data = data;
       cache.error = false;
       cache.failures = 0;
     } catch {
-      cache.error = true;
-      cache.failures += 1;
+      if (cache.revision === revision) { cache.error = true; cache.failures += 1; }
     } finally {
-      const seconds = Math.max(30, Math.min(3600, cache.data?.refreshSeconds || 60));
-      cache.nextAt = now + Math.min(Math.max(600, seconds), seconds * 2 ** Math.min(cache.failures, 4)) * 1000;
+      if (cache.revision === revision) {
+        const seconds = Math.max(30, Math.min(3600, cache.data?.refreshSeconds || 60));
+        cache.nextAt = now + Math.min(Math.max(600, seconds), seconds * 2 ** Math.min(cache.failures, 4)) * 1000;
+      }
     }
   })();
-  try { await cache.pending; }
-  finally { cache.pending = null; }
+  cache.pending = request;
+  try { await request; }
+  finally { if (cache.pending === request) cache.pending = null; }
 }
 
 export function footerState(cache, now = Date.now()) {

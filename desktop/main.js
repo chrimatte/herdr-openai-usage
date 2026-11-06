@@ -3,7 +3,8 @@ import { h_flex } from 'gpui-base';
 import { exec, home, notify, panes, props, run, theme } from 'herdr';
 import { createCache, refreshCache, footerState, isLocalCodex } from './state.js';
 
-const registryKey = '__localOpenAIUsageFooterV1';
+const registryKey = '__localOpenAIUsageFooterV2';
+const generation = {};
 
 export default class OpenAIUsageFooter extends View {
   init(_props, cx) {
@@ -12,7 +13,11 @@ export default class OpenAIUsageFooter extends View {
     const key = `${props()?.sourceRoot ?? ''}:${props()?.configDir ?? ''}`;
     // Shared in memory across pane copies; Herdr shared()/localStorage persist to disk.
     const registry = globalThis[registryKey] ?? (globalThis[registryKey] = {});
-    this.cache = registry[key] ?? (registry[key] = createCache());
+    const previous = registry[key];
+    if (!previous || previous.generation !== generation) {
+      registry[key] = { ...createCache(), data: previous?.data ?? null, generation };
+    }
+    this.cache = registry[key];
     this.refresh(cx);
     cx.timer.every(15000, (cx) => this.refresh(cx));
   }

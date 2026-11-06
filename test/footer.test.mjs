@@ -52,6 +52,22 @@ test('pane copies share an in-flight read and respect refresh interval', async (
   assert.equal(reads, 1);
 });
 
+test('an abandoned read after native reload cannot block or overwrite a new reading', async () => {
+  const cache = createCache();
+  let release;
+  const oldRead = refreshCache(cache, () => new Promise((resolve) => { release = resolve; }), now);
+  let freshRead = false;
+  const nextRead = refreshCache(cache, async () => {
+    freshRead = true;
+    return data([{ usedPercent: 40, label: 'Settimana' }]);
+  }, now + 45000);
+  assert.equal(freshRead, true);
+  await nextRead;
+  release(data([{ usedPercent: 10, label: 'Settimana' }]));
+  await oldRead;
+  assert.equal(footerState(cache, now + 45000).remaining, 60);
+});
+
 test('errors retain the previous reading, mark it stale and back off', async () => {
   const cache = createCache();
   await refreshCache(cache, async () => data(), now);

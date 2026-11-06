@@ -1,6 +1,6 @@
 # Stato del progetto
 
-Aggiornato: 2026-11-06. Versione: 0.3.0.
+Aggiornato: 2026-11-06. Versione: 0.3.1.
 
 ## Obiettivo e decisioni
 
@@ -24,6 +24,6 @@ README e guida per contributori descrivono installazione, limiti, dati e verific
 
 ## Verifiche e continuità
 
-39 test automatici superati e sintassi verificata. Controllo nativo del mod superato e fascia osservata nell’app con quote reali, senza sottrarre il focus alla chat. Herdr app 0.1.13, Herdr da terminale 0.9.5, Codex CLI 0.167.0, Node.js 26; Linux non collaudato dal vivo per la UI.
+40 test automatici, incluso il recupero di una lettura abbandonata dopo ricaricamento nativo senza sovrascrivere i dati nuovi. Controllo nativo del mod e verifica visiva con quote reali, senza sottrarre il focus alla chat. Herdr app 0.1.13, Herdr da terminale 0.9.5, Codex CLI 0.167.0, Node.js 26; Linux non collaudato dal vivo per la UI. La prima CI pubblica su Node 22/26, macOS/Linux è passata; verificare ogni nuovo SHA prima di dichiarare la CI aggiornata.
 
 Per proseguire: rileggere stato Git e remoto, mantenere il checkout perché il mod lo esegue, usare i controlli di CONTRIBUTING.md e verificare una cattura dopo modifiche visive. Nessuna delegazione salvo richiesta esplicita. Pubblicare solo entro il consenso della sessione.
